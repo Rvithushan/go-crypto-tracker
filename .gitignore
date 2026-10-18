@@ -1,0 +1,13 @@
+# Executables / Binaries
+/crypto-tracker
+*.exe
+*.out
+
+# Local logs
+logs.txt
+*.log
+
+# OS / Editor files
+.DS_Store
+.vscode/
+.idea/

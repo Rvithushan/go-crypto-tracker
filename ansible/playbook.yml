@@ -1,0 +1,49 @@
+---
+- name: Setup Go Crypto Tracker Infrastructure & Build Image
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: 1. Verify Docker is running
+      command: docker info
+      register: docker_status
+      changed_when: false
+
+    - name: Display Docker Status Confirmation
+      debug:
+        msg: "Docker is running cleanly on the local system."
+
+# Following line prepared to be used directly in windows with git bash
+#    - name: 2. Build local Go App Docker Image commented
+#      command: docker build -t go-crypto-tracker:v1 .
+#      args:
+#        chdir: ".."
+#      register: build_output
+
+
+#following line updated to use in WSL 
+
+    - name: 2. Build local Go App Docker Imange 
+      command: docker build -t go-crypto-tracker:v1 /mnt/d/Projects/go-crypto-tracker
+      register: build_output
+
+    - name: 2b. Run the container using the image build in able step 
+      command: docker run -d --name go-crypto-tracker-container -p 9091:8080 go-crypto-tracker:v1 
+      register: container_run
+      failed_when: false
+
+    - name: Display Docker Build Output
+      debug:
+        msg: "{{ build_output.stdout_lines }}"
+
+    - name: 3. Verify Minikube status 
+      command: minikube status
+      register: minikube_status
+      ignore_errors: true
+      changed_when: false
+
+    - name: Display Minikube Status
+      debug:
+        msg: "{{ minikube_status.stdout_lines }}"
+
+
